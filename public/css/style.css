@@ -1,0 +1,14 @@
+body{
+    background: url(../images/background.jpg);
+    background-attachment: fixed;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+#articles{
+    background: rgba(128, 128, 128, 0.705);
+}
+
+ul {
+    list-style-type: none;
+  }

@@ -1,41 +1,47 @@
-const express = require('express');
-const expressHandlebars = require('express-handlebars');
-const bodyParser = require('body-parser')
-const cheerio = require('cheerio');
-const mongoose = require('mongoose');
-const request = require('request');
+//dependencies
+var express = require("express");
+var logger = require("morgan");
+var mongoose = require("mongoose");
+let exphbs = require("express-handlebars");
+let bodyParser = require("body-parser");
 
-const PORT = process.env.PORT || 8080;
 
-const app = express();
-const router = express.Router();
 
-require("./config/routes")(router);
-require("./routes/scrape")(app);
+var PORT = 3000;
 
-app.use(express.static(__dirname + '/public'));
+// Initialize Express
+var app = express();
+let router = express.Router();
 
-app.engine('handlebars', expressHandlebars({
-    defaultLayout: "main"
+// Configure middleware
+require("./routes/routes")(app);
+require("./config/viewRoutes")(router);
+
+// Use morgan logger for logging requests
+app.use(logger("dev"));
+// Parse request body as JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+// Make public a static folder
+app.use(express.static(__dirname + "/public"));
+
+//connect handlebars to express app
+app.engine("handlebars", exphbs({
+    defaultLayout : "main"
 }));
 app.set("view engine", "handlebars");
 
-app.get('/', function (req, res) {
-    res.render('home');
-});
+//body parser
+app.use(bodyParser.urlencoded({extended:false}))
 
-app.use(bodyParser.urlencoded({extended:false}));
-
+// have every request go through router middleware
 app.use(router);
 
+// Connect to the Mongo DB
+mongoose.connect("mongodb://localhost/hwork", { useNewUrlParser: true });
 
-// const db = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-//connect to database, if there is an error, throw error
-mongoose.connect("mongodb://localhost/articleHomework", function(err){
-    if(err) throw err;
-    console.log("mongoose connection is successful")
-})
+
 
 app.listen(PORT, function(){
-    console.log("listening on PORT: " + PORT);
+    console.log("Listening on PORT " + PORT);
 })
