@@ -7,6 +7,7 @@ $.getJSON("/articles", function(data) {
       <h3>${data[i].title}</h3>
       <p>${data[i].summary}</p>
       <a href="http://espn.com/${data[i].link}">LINK</a>
+      <button data-id=${data[i]._id}>Note</button>
       </li>
       `
       $("#articles").append(article);
@@ -15,7 +16,7 @@ $.getJSON("/articles", function(data) {
   
   
   // Whenever someone clicks a p tag
-  $(document).on("click", "p", function() {
+  $(document).on("click", "li", function() {
     // Empty the notes from the note section
     $("#notes").empty();
     // Save the id from the p tag
