@@ -37,10 +37,14 @@ app.use(bodyParser.urlencoded({extended:false}))
 // have every request go through router middleware
 app.use(router);
 
-// Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/hwork", { useNewUrlParser: true });
-
-
+// connect to database
+mongoose.Promise = Promise;
+var dbConnect = process.env.MONGODB_URI || "mongodb://localhost/nbascrape";
+if(process.env.MONGODB_URI) {
+    mongoose.connect(process.env.MONGODB_URI)
+} else {
+    mongoose.connect(dbConnect);
+}
 
 app.listen(PORT, function(){
     console.log("Listening on PORT " + PORT);
